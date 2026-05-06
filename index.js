@@ -1,13 +1,14 @@
 const INITIAL_CASH = 100000;
 const MAX_ROUNDS = 30;
+const API_URL = 'http://localhost:5000/api/stocks';
 
-const STOCKS = [
-  { symbol: 'PTT',  name: 'ปตท.',           price: 35,   volatility: 0.04 },
-  { symbol: 'AOT',  name: 'ท่าอากาศยาน',     price: 72,   volatility: 0.05 },
-  { symbol: 'ADVA', name: 'แอดวานซ์ อินโฟ',  price: 220,  volatility: 0.035 },
-  { symbol: 'CPALL',name: 'ซีพี ออลล์',       price: 58,   volatility: 0.045 },
-  { symbol: 'KBANK',name: 'กสิกรไทย',         price: 145,  volatility: 0.04 },
-  { symbol: 'SCB',  name: 'ไทยพาณิชย์',       price: 105,  volatility: 0.04 },
+const STOCKS_DEFAULT = [
+  { symbol: 'PTT',   name: 'ปตท.',           price: 35,   volatility: 0.04 },
+  { symbol: 'AOT',   name: 'ท่าอากาศยาน',     price: 72,   volatility: 0.05 },
+  { symbol: 'ADVA',  name: 'แอดวานซ์ อินโฟ',  price: 220,  volatility: 0.035 },
+  { symbol: 'CPALL', name: 'ซีพี ออลล์',       price: 58,   volatility: 0.045 },
+  { symbol: 'KBANK', name: 'กสิกรไทย',         price: 145,  volatility: 0.04 },
+  { symbol: 'SCB',   name: 'ไทยพาณิชย์',       price: 105,  volatility: 0.04 },
 ];
 
 const NEWS_EVENTS = [
@@ -313,16 +314,63 @@ function closeModal() {
   modalStock = null;
 }
 
-function resetGame() {
+async function resetGame() {
   cash = INITIAL_CASH;
   portfolio = {};
   round = 1;
-  stocks = STOCKS.map(s => ({ ...s, history: [s.price], currentPrice: s.price }));
   currentEvent = null;
   document.getElementById('game-over').classList.add('hidden');
+  stocks = await loadStockPrices();
   render();
   updateTicker(null);
 }
 
+// Fetch real prices from Python server, fallback to defaults
+async function loadStockPrices() {
+  const banner = document.getElementById('data-source-banner');
+  try {
+    const res = await fetch(API_URL, { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const mapped = STOCKS_DEFAULT.map(def => {
+      const live = data.stocks[def.symbol];
+      if (live) {
+        return {
+          symbol: def.symbol,
+          name: live.name,
+          price: live.currentPrice,
+          volatility: def.volatility,
+          history: live.history.map(p => +p),
+          currentPrice: live.currentPrice,
+          source: live.source,
+        };
+      }
+      return { ...def, history: [def.price], currentPrice: def.price, source: 'fallback' };
+    });
+    const liveCount = mapped.filter(s => s.source === 'live').length;
+    if (banner) {
+      banner.textContent = liveCount > 0
+        ? `📡 ราคาจริงจาก SET (${liveCount}/${mapped.length} ตัว) — ข้อมูลล่าสุดจาก Yahoo Finance`
+        : '⚠️ ไม่สามารถดึงราคาจริงได้ ใช้ราคาจำลอง';
+      banner.className = 'data-banner ' + (liveCount > 0 ? 'live' : 'sim');
+    }
+    return mapped;
+  } catch {
+    if (banner) {
+      banner.textContent = '⚠️ ไม่ได้เชื่อมต่อ server — ใช้ราคาจำลอง (รัน python server.py เพื่อดูราคาจริง)';
+      banner.className = 'data-banner sim';
+    }
+    return STOCKS_DEFAULT.map(s => ({ ...s, history: [s.price], currentPrice: s.price, source: 'fallback' }));
+  }
+}
+
 // Init
-resetGame();
+(async () => {
+  cash = INITIAL_CASH;
+  portfolio = {};
+  round = 1;
+  currentEvent = null;
+  stocks = await loadStockPrices();
+  render();
+  updateTicker(null);
+})();

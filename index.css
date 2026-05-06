@@ -59,6 +59,17 @@ header h1 { font-size: 1.6rem; margin-bottom: 12px; color: #58a6ff; }
 #reset-btn { background: #30363d; color: #c9d1d9; }
 #reset-btn:hover { background: #3d444d; }
 
+/* Data source banner */
+.data-banner {
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 0.8rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.data-banner.live { background: rgba(63,185,80,0.12); border: 1px solid #3fb950; color: #3fb950; }
+.data-banner.sim  { background: rgba(240,192,64,0.10); border: 1px solid #f0c040; color: #f0c040; }
+
 /* News ticker */
 .ticker-wrap {
   background: #161b22;
