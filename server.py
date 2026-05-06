@@ -23,6 +23,7 @@ STOCKS = {
     "CPALL": {"ticker": "CPALL.BK",  "name": "ซีพี ออลล์"},
     "KBANK": {"ticker": "KBANK.BK",  "name": "กสิกรไทย"},
     "SCB":   {"ticker": "SCB.BK",    "name": "ไทยพาณิชย์"},
+    "MU":    {"ticker": "MU",        "name": "Micron Technology"},
 }
 
 # ราคา fallback กรณี API ไม่ตอบ
@@ -33,6 +34,7 @@ FALLBACK_PRICES = {
     "CPALL": 58.0,
     "KBANK": 145.0,
     "SCB":   105.0,
+    "MU":    95.0,
 }
 
 

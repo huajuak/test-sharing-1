@@ -3,12 +3,13 @@ const MAX_ROUNDS = 30;
 const API_URL = 'http://localhost:5000/api/stocks';
 
 const STOCKS_DEFAULT = [
-  { symbol: 'PTT',   name: 'ปตท.',           price: 35,   volatility: 0.04 },
-  { symbol: 'AOT',   name: 'ท่าอากาศยาน',     price: 72,   volatility: 0.05 },
-  { symbol: 'ADVA',  name: 'แอดวานซ์ อินโฟ',  price: 220,  volatility: 0.035 },
-  { symbol: 'CPALL', name: 'ซีพี ออลล์',       price: 58,   volatility: 0.045 },
-  { symbol: 'KBANK', name: 'กสิกรไทย',         price: 145,  volatility: 0.04 },
-  { symbol: 'SCB',   name: 'ไทยพาณิชย์',       price: 105,  volatility: 0.04 },
+  { symbol: 'PTT',   name: 'ปตท.',              price: 35,   volatility: 0.04 },
+  { symbol: 'AOT',   name: 'ท่าอากาศยาน',        price: 72,   volatility: 0.05 },
+  { symbol: 'ADVA',  name: 'แอดวานซ์ อินโฟ',     price: 220,  volatility: 0.035 },
+  { symbol: 'CPALL', name: 'ซีพี ออลล์',          price: 58,   volatility: 0.045 },
+  { symbol: 'KBANK', name: 'กสิกรไทย',            price: 145,  volatility: 0.04 },
+  { symbol: 'SCB',   name: 'ไทยพาณิชย์',          price: 105,  volatility: 0.04 },
+  { symbol: 'MU',    name: 'Micron Technology',   price: 95,   volatility: 0.055 },
 ];
 
 const NEWS_EVENTS = [
@@ -27,6 +28,9 @@ const NEWS_EVENTS = [
   { text: '🎉 ไทยได้รับเลือกเป็นเจ้าภาพ ASEAN Summit', stock: 'AOT', effect: 1 },
   { text: '⚡ ราคาไฟฟ้าพุ่ง กระทบต้นทุนทุกบริษัท', stock: null, effect: -1 },
   { text: '🛡️ รัฐบาลออกมาตรการกระตุ้นเศรษฐกิจ 5 แสนล้าน', stock: null, effect: 1 },
+  { text: '💾 Micron รายงานยอดขาย HBM สำหรับ AI พุ่งแรง!', stock: 'MU', effect: 1 },
+  { text: '📉 ตลาด DRAM ล้นเกิน Micron ปรับลดราคาขาย', stock: 'MU', effect: -1 },
+  { text: '🤖 ความต้องการชิป AI ยังแข็งแกร่ง MU ได้อานิสงส์', stock: 'MU', effect: 1 },
 ];
 
 let cash = INITIAL_CASH;
